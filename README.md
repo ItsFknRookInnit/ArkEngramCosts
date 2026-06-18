@@ -1,64 +1,35 @@
 # Ark Engram Cost Editor
 
-A terminal-styled web tool for editing ARK: Survival Ascended engram crafting
-costs and exporting a `Game.ini` override block
-(`ConfigOverrideItemCraftingCosts`).
+**Live app:** https://arkengramcosts.vercel.app/
 
-Engram and resource data is pulled live from a public Google Sheet (gviz
-JSON endpoint) at load time.
+A specialized, high-performance tool designed to manage and override Ark: Survival Evolved or Ark: Survival Ascended crafting costs. This web application pulls live data from a centralized Google Sheet, parses blueprint paths into valid game class strings, and generates the necessary INI configuration overrides for your game server.
 
-## Local development
+## Overview
 
-```bash
-npm install
-npm run dev
-```
-
-This starts a local dev server (default `http://localhost:5173`).
-
-## Build
-
-```bash
-npm run build
-npm run preview   # optional: preview the production build locally
-```
-
-The production build is output to `dist/`.
-
-## Deploying to Vercel
-
-1. Push this repo to GitHub.
-2. In Vercel, click **Add New Project** and import the GitHub repo.
-3. Vercel auto-detects the Vite framework preset:
-   - **Build command:** `npm run build`
-   - **Output directory:** `dist`
-4. Click **Deploy**.
-
-No environment variables are required — the Google Sheet IDs are hardcoded
-in `src/App.jsx`.
-
-## Configuration
-
-The sheet/tab IDs the app reads from live near the top of `src/App.jsx`:
-
-```js
-const ITEMS_SHEET_ID = '1Gt9_KXXupzUEcuB-aS6oIUut6wEDB-Kol_4z_7ghO_U';
-const ITEMS_GID = '894821371';
-const RES_GID = '1400851834';
-```
-
-Update these if you point the tool at a different sheet. The sheet must be
-shared as "Anyone with the link can view" for the gviz endpoint to work
-client-side.
+The Ark Engram Cost Editor provides a professional, terminal-styled interface to help server administrators fine-tune their game economy. It features real-time search, recipe reconstruction, and a delta output generator to ensure that only your modifications are exported.
 
 ## Usage
 
-- **Search** filters engrams by name or class string.
-- Click an engram row to expand it and edit individual resource amounts.
-- **Import** reads an existing `Game.ini` (or any text file containing
-  `ConfigOverrideItemCraftingCosts=` lines) and loads those overrides into
-  the editor.
-- **Show Modified** filters the list down to engrams you've changed.
-- **Reset** clears all overrides.
-- The right-hand panel shows the live `Game.ini` block — click **Copy** to
-  copy it to your clipboard and paste it into your server's `Game.ini`.
+1. **Synchronization** — On opening the application, the system automatically fetches the latest item and resource data from the configured Google Master Sheet.
+2. **Configuration**
+   - Use the **Search System** to quickly locate the item you wish to modify.
+   - Click on an item to expand its current resource requirements.
+   - Input your custom values into the resource fields. The application automatically calculates the delta requirements.
+3. **Deployment** — Once your modifications are complete, click the **Copy** button in the Ini Output panel. Paste these lines directly into your server's `GameUserSettings.ini` or `Game.ini` file, under the `[/Script/ShooterGame.ShooterGameMode]` section.
+
+## Change Log
+
+### v1.0.0 — Initial Release
+- Implemented live Google Sheet data parsing engine.
+- Introduced Blueprint-to-Class-String transformation logic for ARK native paths.
+- Added dynamic delta output generation for server configuration files.
+- Integrated terminal-inspired UI with a responsive grid layout.
+
+### v1.1.0 — Deployment Fix
+- Restored the `src/` directory (`main.jsx`, `App.jsx`, `index.css`), which was dropped during a GitHub web upload and caused Vercel builds to fail with a Rollup "failed to resolve import" error.
+- Removed a stray uploaded build artifact from the repo root.
+- Verified a clean `npm run build` prior to redeploying.
+
+## Technical Details
+
+Built with **Vite + React + Tailwind CSS**. There's no backend — all data fetching (the Google Sheets gviz endpoint) and INI generation happen client-side in the browser.
